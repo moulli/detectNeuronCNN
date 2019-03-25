@@ -193,12 +193,12 @@ def stack_plans(nstacks, plans_dataset, coord_dataset, cropped_size, stack_mean,
 
 ##### Function that builds training and test sets #####
     
-def build_dataset(plan_in, coord_in, training_proportion):
+def build_dataset(plans_in, coord_in, training_proportion):
     
     """Function that creates dataset based on stacked plans and coordinates.
     
     %%%%% INPUTS %%%%%
-    - plan_in: stacked plans, obtained from stack_plans function (3d matrix)
+    - plans_in: stacked plans, obtained from stack_plans function (3d matrix)
     - coord_in: neurons coordinates, obtained from stack_plans function (2d matrix)
     - training_proportion: training set proportion of whole set (float in ]0, 1[)
     
@@ -210,7 +210,7 @@ def build_dataset(plan_in, coord_in, training_proportion):
     """
     
     # Getting size of images
-    crop_size = plan_in.shape[1]
+    crop_size = plans_in.shape[1]
     # Building training and test sets
     Xtrain = np.zeros((0, crop_size, crop_size))
     Ytrain = np.zeros((0, crop_size*crop_size))
@@ -218,19 +218,65 @@ def build_dataset(plan_in, coord_in, training_proportion):
     Ytest = np.zeros((0, crop_size*crop_size))
     
     # For-loop on number of examples
-    lensk = plan_in.shape[0]
+    lensk = plans_in.shape[0]
     test_switch = int(np.round_(training_proportion*lensk))
     for i in range(lensk):
-        plan_in_temp = plan_in[plan_in[:, 0] == i, 1:3]
+        coord_in_temp = coord_in[coord_in[:, 0] == i, 1:3]
         Ytemp = np.zeros((crop_size, crop_size))
-        Ytemp[plan_in_temp[:, 0].astype(int), plan_in_temp[:, 1].astype(int)] = 1
+        Ytemp[coord_in_temp[:, 0].astype(int), coord_in_temp[:, 1].astype(int)] = 1
         if i < test_switch:
             Ytrain = np.vstack((Ytrain, Ytemp.reshape(1, crop_size*crop_size)))
-            Xtrain = np.concatenate((Xtrain, plan_in[i, :, :][np.newaxis, :, :]), axis=0)
+            Xtrain = np.concatenate((Xtrain, plans_in[i, :, :][np.newaxis, :, :]), axis=0)
         else:
             Ytest = np.vstack((Ytest, Ytemp.reshape(1, crop_size*crop_size)))
-            Xtest = np.concatenate((Xtest, plan_in[i, :, :][np.newaxis, :, :]), axis=0)
+            Xtest = np.concatenate((Xtest, plans_in[i, :, :][np.newaxis, :, :]), axis=0)
             
     # Returning sets
     return Xtrain, Ytrain, Xtest, Ytest
+
+
+
+
+
+##### Function that 'compresses' plans and coord #####
+
+def compress_plans(plans_in, coord_in, compression):
     
+    """Function that creates new dataset, compressing pixels.
+    
+    %%%%% INPUTS %%%%%
+    - plans_in: stacked plans, obtained from stack_plans function (3d matrix)
+    - coord_in: neurons coordinates, obtained from stack_plans function (2d matrix)
+    - compression: number of pixels averaged in each direction for each new pixel (integer)
+    
+    %%%%% OUTPUTS %%%%%
+    - plans_out: new plan (3d matrix)
+    - coord_out: new coordinates. By convention, neurons centers are attributed to lower pixel if not integer (2d matrix)
+    """
+    
+    # Making sure compression is an integer
+    compression = int(compression)
+    
+    # Building new plans and coordinates
+    dataset_size = plans_in.shape[0]
+    crop_size = plans_in.shape[1]
+    blow = int(np.ceil(crop_size/compression))
+    plans_out = np.zeros((dataset_size, blow, blow))
+    coord_out = np.hstack((coord_in[:, 0][:, np.newaxis], np.floor(coord_in[:, 1:3] / compression)))
+    coord_out = np.unique(coord_out, axis=0)
+    
+    # For-loop on each 
+    for k in range(dataset_size):
+        # All new pixels except last row and column
+        for i in range(blow-1):
+            for j in range(blow-1):
+                plans_out[k, i, j] = np.mean(plans_in[k, compression*i:compression*(i+1), compression*j:compression*(j+1)])
+        # Last row and column
+        for i in range(blow-1):
+            plans_out[k, i, blow-1] = np.mean(plans_in[k, compression*i:compression*(i+1), compression*(blow-1):-1])
+        for j in range(blow-1):
+            plans_out[k, i, blow-1] = np.mean(plans_in[k, compression*(blow-1):-1, compression*j:compression*(j+1)])
+        plans_out[k, blow-1, blow-1] = np.mean(plans_in[k, compression*(blow-1):-1, compression*(blow-1):-1])
+        
+    # Returning outputs
+    return plans_out, coord_out
