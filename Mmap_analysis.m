@@ -5,13 +5,14 @@ clear; close all; clc
 
 addpath(genpath('/home/ljp/Programs'));
 
-root = '/home/ljp/Science/GeoffreysComputer/Paper_Data/2018_Migault/';
+root = '/home/ljp/Science/GeoffreysComputer/Projects/RLS/';
 study = '';
-date = '2018-05-24';
-run = 08;
+date = '2019-05-16';
+run = 01;
 F = NT.Focus(root, study, date, run);
 
-m = Mmap(F.tag('corrected'));
+% m = Mmap(F.tag('corrected'));
+m = adapted4DMatrix(F, 'corrected');
 
 
 %% Loading one layer on maximizing:
@@ -23,20 +24,20 @@ mlayer = max(mlayer, [], 3);
 
 %% Algorithm to detect neurons:
 
-% Resizing mlayer:
-mlayertemp = double(mlayer(201:300, 601:700));
-slayer = size(mlayertemp);
-% Main algorithm:
-mdiffx = zeros(slayer-2);
-mdiffy = zeros(slayer-2);
-mdifftopx = zeros(slayer-2);
-mdifftopy = zeros(slayer-2);
-for i = 2:(slayer(1)-1)
-    mdiffx(:, i-1) = (mlayertemp(2:end-1, i+1)-mlayertemp(2:end-1, i) > 0) & (mlayertemp(2:end-1, i)-mlayertemp(2:end-1, i-1) > 0);
-    mdiffy(i-1, :) = (mlayertemp(i+1, 2:end-1)-mlayertemp(i, 2:end-1) > 0) & (mlayertemp(i, 2:end-1)-mlayertemp(i-1, 2:end-1) > 0);
-    mdifftopx(:, i-1) = (mlayertemp(2:end-1, i+1)-mlayertemp(2:end-1, i) > 0) & (mlayertemp(2:end-1, i)-mlayertemp(2:end-1, i-1) < 0);
-    mdifftopy(i-1, :) = (mlayertemp(i+1, 2:end-1)-mlayertemp(i, 2:end-1) > 0) & (mlayertemp(i, 2:end-1)-mlayertemp(i-1, 2:end-1) < 0);
-end
+% % Resizing mlayer:
+% mlayertemp = double(mlayer(201:300, 601:700));
+% slayer = size(mlayertemp);
+% % Main algorithm:
+% mdiffx = zeros(slayer-2);
+% mdiffy = zeros(slayer-2);
+% mdifftopx = zeros(slayer-2);
+% mdifftopy = zeros(slayer-2);
+% for i = 2:(slayer(1)-1)
+%     mdiffx(:, i-1) = (mlayertemp(2:end-1, i+1)-mlayertemp(2:end-1, i) > 0) & (mlayertemp(2:end-1, i)-mlayertemp(2:end-1, i-1) > 0);
+%     mdiffy(i-1, :) = (mlayertemp(i+1, 2:end-1)-mlayertemp(i, 2:end-1) > 0) & (mlayertemp(i, 2:end-1)-mlayertemp(i-1, 2:end-1) > 0);
+%     mdifftopx(:, i-1) = (mlayertemp(2:end-1, i+1)-mlayertemp(2:end-1, i) > 0) & (mlayertemp(2:end-1, i)-mlayertemp(2:end-1, i-1) < 0);
+%     mdifftopy(i-1, :) = (mlayertemp(i+1, 2:end-1)-mlayertemp(i, 2:end-1) > 0) & (mlayertemp(i, 2:end-1)-mlayertemp(i-1, 2:end-1) < 0);
+% end
 
 
 %% Algorithm discovering map:
@@ -109,6 +110,7 @@ end
 
 %% Works really badly, let's try with gaussians:
 
+LIMIT = 450;
 mlayer_gauss = double(mlayer);
 figure; image(mlayer_gauss, 'CDataMapping', 'scaled'); colorbar; axis equal
 slayer = size(mlayer_gauss);
@@ -121,13 +123,13 @@ print_info = 0;
 tic
 while 1
     [maxmax, maxind] = max(mlayer_gauss(:));
-    if maxmax < 900
+    if maxmax < LIMIT
         break
     end
     [xpt, ypt] = ind2sub(slayer, maxind);
     pts = zeros(0, 2);
-    for k1 = -4:4
-        for k2 = -4:4
+    for k1 = -2:2
+        for k2 = -2:2
             xtemp = max(1, xpt+k1); xtemp = min(slayer(1), xtemp);
             ytemp = max(1, ypt+k2); ytemp = min(slayer(2), ytemp);
             pts_temp = repmat([xtemp, ytemp], round(mlayer(xtemp, ytemp)), 1);
