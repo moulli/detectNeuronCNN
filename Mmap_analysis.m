@@ -17,7 +17,7 @@ m = adapted4DMatrix(F, 'corrected');
 
 %% Loading one layer on maximizing:
 
-layer = 10;
+layer = 12;
 mlayer = permute(m(:, :, 10, :), [1, 2, 4, 3]);
 mlayer = max(mlayer, [], 3);
 
@@ -111,10 +111,15 @@ mlayer = max(mlayer, [], 3);
 %% Works really badly, let's try with gaussians:
 
 LIMIT = 450;
+halfsize_neuron = 2;
+mlayer_copy = mlayer;
+mlayer = double(mlayer);
 mlayer_gauss = double(mlayer);
 figure; image(mlayer_gauss, 'CDataMapping', 'scaled'); colorbar; axis equal
 slayer = size(mlayer_gauss);
 mlayer_ind = ones(slayer);
+centers_layer = zeros(0, 2);
+DEG = zeros(0, 4);
 % mneurons = zeros([slayer, 0]);
 mneurons = {};
 [Ylay, Xlay] = meshgrid(1:slayer(2), 1:slayer(1));
@@ -127,9 +132,15 @@ while 1
         break
     end
     [xpt, ypt] = ind2sub(slayer, maxind);
+    % Find differences in layers
+    deg_lay1 = [mlayer(xpt-1, ypt), mlayer(xpt+1, ypt), mlayer(xpt, ypt-1), mlayer(xpt, ypt+1)];
+    deg_lay2 = [mlayer(xpt-2, ypt), mlayer(xpt+2, ypt), mlayer(xpt, ypt-2), mlayer(xpt, ypt+2)];
+    deg_lay = [maxmax-deg_lay1]; %, deg_lay1-deg_lay2];
+    
+    
     pts = zeros(0, 2);
-    for k1 = -2:2
-        for k2 = -2:2
+    for k1 = -halfsize_neuron:halfsize_neuron
+        for k2 = -halfsize_neuron:halfsize_neuron
             xtemp = max(1, xpt+k1); xtemp = min(slayer(1), xtemp);
             ytemp = max(1, ypt+k2); ytemp = min(slayer(2), ytemp);
             pts_temp = repmat([xtemp, ytemp], round(mlayer(xtemp, ytemp)), 1);
@@ -147,7 +158,11 @@ while 1
     % Adding neuron:
     minus_gauss(minus_gauss < 0.001) = 0;
 %     mneurons = cat(3, mneurons, minus_gauss);
-    mneurons = [mneurons; {sparse(minus_gauss)}];
+    if all(deg_lay >= -5)
+        DEG = cat(1, DEG, deg_lay);
+        centers_layer = cat(1, centers_layer, [xpt, ypt]);
+        mneurons = [mneurons; {sparse(minus_gauss)}];
+    end
     % Information:
     if mod(length(mneurons), 100) == 0
         fprintf(repmat('\b', 1, print_info));
@@ -159,7 +174,14 @@ for i = 1:length(mneurons); temp = temp + full(mneurons{i}); end
 figure; image(temp, 'CDataMapping', 'scaled'); colorbar; axis equal
 path_created = fullfile('/home/ljp/Science/Hippolyte', 'mneurons.mat');
 save(path_created, 'mneurons');
-    
+
+% Plotting centers of neurons
+figure
+hold on
+image(mlayer, 'CDataMapping', 'scaled')
+colorbar
+axis equal
+plot(centers_layer(:, 2), centers_layer(:, 1), '.r')
 
     
     
