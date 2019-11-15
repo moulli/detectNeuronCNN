@@ -167,7 +167,7 @@ while 1
     minus_gauss(minus_gauss < 0.001) = 0;
 %     mneurons = cat(3, mneurons, minus_gauss);
     if 1 %all(deg_lay >= -5)
-        DEG = cat(1, DEG, deg_lay);
+%         DEG = cat(1, DEG, deg_lay);
         centers_layer = cat(1, centers_layer, [xpt, ypt]);
         mneurons = [mneurons; {sparse(minus_gauss)}];
     end
@@ -201,6 +201,7 @@ for i = 1:10
     set(h,'Visible','off');
     hold on
     co = centers_layer(randperm(size(centers_layer, 1), 1), :);
+%     co = centers_layer(i, :);
     n = 15; temp = mlayer(co(1)-n:co(1)+n, co(2)-n:co(2)+n);
     image(temp, 'CDataMapping', 'scaled')
     scatter(n+1, n+1, '.k')
