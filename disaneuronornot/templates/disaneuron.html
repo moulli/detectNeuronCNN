@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>DIS A NEURON or NOT - simulation</title>
+	<link rel="icon" type="image/png" href="{{url_for('static', filename='brain-solid.png')}}" />
+
+</head>
+<body>
+	<h1>Welcome to THE SIMULATION</h1>
+
+	{% if prev_len == 2 %}
+		<form method="POST" action="">
+			{{ prev_form.hidden_tag() }}
+			{{ prev_form.submit }}
+		</form>
+	{% else %}
+		No previous image!
+	{% endif %}
+
+	<img src="{{ img }}" title="Rate this neuron!" alt="Picture of what may or may not be a neuron" />
+	<figcaption>Rate this neuron!</figcaption>
+
+	<form method="POST" action="">
+		{{ form.hidden_tag() }}
+		{{ form.submit_Y }}
+		{{ form.submit_N }}
+	</form>
+
+	<div>
+		Click below to get back to homepage <br>
+		<a class="nav-item nav-link" href="{{ url_for('index') }}">Get back to welcoming page</a>
+	</div>
+</body>
+</html>
