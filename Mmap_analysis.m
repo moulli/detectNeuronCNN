@@ -1,4 +1,5 @@
 clear; close all; clc
+cd /home/ljp/Science/Hippolyte/detectNeuronCNN
 
 
 %% Focus and create Mmap:
@@ -20,6 +21,13 @@ m = adapted4DMatrix(F, 'corrected');
 layer = 12;
 mlayer = permute(m(:, :, 10, :), [1, 2, 4, 3]);
 mlayer = max(mlayer, [], 3);
+
+
+%% Directly importing graystack
+
+gs = graystack00000012;
+gs = gs(26:end, 26:end);
+mlayer = gs;
 
 
 %% Algorithm to detect neurons:
@@ -110,7 +118,7 @@ mlayer = max(mlayer, [], 3);
 
 %% Works really badly, let's try with gaussians:
 
-LIMIT = 450;
+LIMIT = 440;
 halfsize_neuron = 2;
 mlayer_copy = mlayer;
 mlayer = double(mlayer);
@@ -132,10 +140,10 @@ while 1
         break
     end
     [xpt, ypt] = ind2sub(slayer, maxind);
-    % Find differences in layers
-    deg_lay1 = [mlayer(xpt-1, ypt), mlayer(xpt+1, ypt), mlayer(xpt, ypt-1), mlayer(xpt, ypt+1)];
-    deg_lay2 = [mlayer(xpt-2, ypt), mlayer(xpt+2, ypt), mlayer(xpt, ypt-2), mlayer(xpt, ypt+2)];
-    deg_lay = [maxmax-deg_lay1]; %, deg_lay1-deg_lay2];
+%     % Find differences in layers
+%     deg_lay1 = [mlayer(xpt-1, ypt), mlayer(xpt+1, ypt), mlayer(xpt, ypt-1), mlayer(xpt, ypt+1)];
+%     deg_lay2 = [mlayer(xpt-2, ypt), mlayer(xpt+2, ypt), mlayer(xpt, ypt-2), mlayer(xpt, ypt+2)];
+%     deg_lay = [maxmax-deg_lay1]; %, deg_lay1-deg_lay2];
     
     
     pts = zeros(0, 2);
@@ -158,7 +166,7 @@ while 1
     % Adding neuron:
     minus_gauss(minus_gauss < 0.001) = 0;
 %     mneurons = cat(3, mneurons, minus_gauss);
-    if all(deg_lay >= -5)
+    if 1 %all(deg_lay >= -5)
         DEG = cat(1, DEG, deg_lay);
         centers_layer = cat(1, centers_layer, [xpt, ypt]);
         mneurons = [mneurons; {sparse(minus_gauss)}];
@@ -185,7 +193,27 @@ plot(centers_layer(:, 2), centers_layer(:, 1), '.r')
 
     
     
-    
+%% Saving individual neurons
+
+cd images_to_label
+for i = 1:10
+    h = figure;
+    set(h,'Visible','off');
+    hold on
+    co = centers_layer(randperm(size(centers_layer, 1), 1), :);
+    n = 15; temp = mlayer(co(1)-n:co(1)+n, co(2)-n:co(2)+n);
+    image(temp, 'CDataMapping', 'scaled')
+    scatter(n+1, n+1, '.k')
+    x = n+1; y = n+1; r = 5;
+    ang=0:0.01:2*pi; 
+    xp=r*cos(ang);
+    yp=r*sin(ang);
+    plot(x+xp,y+yp, 'k');
+    axis equal
+    axis off
+    namesave = strcat(num2str(round(100000000*rand)), '.png');
+    hgexport(h, namesave, hgexport('factorystyle'), 'Format', 'png');
+end
     
     
     
