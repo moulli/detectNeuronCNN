@@ -6,31 +6,81 @@
 	<title>DIS A NEURON or NOT - simulation</title>
 	<link rel="icon" type="image/png" href="{{url_for('static', filename='brain-solid.png')}}" />
 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
 <body>
-	<h1>Welcome to THE SIMULATION</h1>
 
-	{% if prev_len == 2 %}
-		<form method="POST" action="">
-			{{ prev_form.hidden_tag() }}
-			{{ prev_form.submit }}
-		</form>
-	{% else %}
-		No previous image!
-	{% endif %}
+	<div class="container">
 
-	<img src="{{ img }}" title="Rate this neuron!" alt="Picture of what may or may not be a neuron" />
-	<figcaption>Rate this neuron!</figcaption>
+		<div class="row mt-2 mb-4">
+			<h1>Welcome to THE SIMULATION</h1>
+		</div>
 
-	<form method="POST" action="">
-		{{ form.hidden_tag() }}
-		{{ form.submit_Y }}
-		{{ form.submit_N }}
-	</form>
+		<div class="row">
+			<div class="col-5">
+				<figure class="figure">
+					<img src="{{ img }}" title="Rate this neuron!" alt="Picture of what may or may not be a neuron" class="img-fluid" />
+					<figcaption class="text-center">Rate this neuron!</figcaption>
+				</figure>
+			</div>
 
-	<div>
-		Click below to get back to homepage <br>
-		<a class="nav-item nav-link" href="{{ url_for('index') }}">Get back to welcoming page</a>
+			<div class="col-3">
+				<form method="POST" action="" id="form">
+					<div class="btn-group-vertical btn-block">
+						<input type="submit" name="yesneu" value="HEY DIS A NEURON!" id="yes_form" class="btn btn-secondary">
+						<input type="submit" name="noneu" value="Definitely NOT a neuron" id="no_form" class="btn btn-light mb-5">
+
+
+						{% if prev_len == 2 %}
+							<form method="POST" action="">
+								<input type="submit" name="previous" value="Oops back to previous image" id="prev_form" class="btn btn-info">
+							</form>
+						{% else %}
+							No previous image!
+						{% endif %}
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div class="row mt-4">
+			Click below to get back to homepage
+		</div>
+		<div class="row">
+			<a class="nav-item nav-link" href="{{ url_for('index') }}">Get back to welcoming page</a>
+		</div>
+
 	</div>
+
+
+	<script type="text/javascript">
+		var addEvent = document.addEventListener ? function(target, type, action) {
+			if(target) {
+				target.addEventListener(type, action, false);
+			}
+		} : function(target, type, action) {
+			if(target) {
+				target.attachEvent('on' + type, action, false);
+			}
+		}
+
+		addEvent(document, 'keydown', function(e) {
+			e = e || window.event;
+			var key = e.which || e.keyCode;
+			if(key===68) {
+				document.getElementById('prev_form').click();
+			} else if(key===89) {
+				document.getElementById('yes_form').click();
+			} else if(key===78) {
+				document.getElementById('no_form').click();
+			}
+		});
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 </body>
 </html>

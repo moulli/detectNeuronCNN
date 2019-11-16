@@ -6,14 +6,62 @@
 	<title>DIS A NEURON or NOT</title>
 	<link rel="icon" type="image/png" href="{{url_for('static', filename='brain-solid.png')}}" />
 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 </head>
 <body>
-	<h1>Welcome to THIS A NEURON or NOT</h1>
-	<h2>The goal is for you to identify whether the displayed image looks like a neuron or not. This will help train a simple convolutional neural network to recognize whether the pattern provided as input is a neuron or not. Hence the name, THIS A NEURON. Thank you for your amazing time.</h2>
+
+	<div class="container">
+
+		<div class="row mt-2 mb-4">
+			<h1>Welcome to DIS A NEURON or NOT</h1>
+		</div>
+
+		<div class="row">
+			<h2>The goal is for you to identify whether the displayed image looks like a neuron or not. This will help train a simple convolutional neural network to recognize whether the pattern provided as input is a neuron or not. Hence the name, THIS A NEURON. </h2>
+		</div>
+
+		<div class="row">
+			<h3>You can select whether you think it is a neuron or not by clicking on the two buttons right of the image. Otherwise you can also press keys 'y' if you think it is a neuron, or 'n' if you think it is not a neuron. <br>
+			You can go back once to the previous image if you think you classified wrongly, by clicking on the button left of the picture. You can also press key 'd' to do that. <br>
+			Thank you for your amazing time.
+			</h3>
+		</div>
 	
-	<div>
-		Click below to launch simulation <br>
-		<a class="nav-item nav-link" href="{{ url_for('disaneuron') }}">Click here</a>
+		<div class="row mt-4">
+			Click below to launch simulation <br>
+		</div> 
+		<div class="row">
+			<a class="nav-item nav-link" href="{{ url_for('disaneuron') }}">Click here</a>
+		</div> 
+
+		<div id="showDate" class="row text-center">Hit t for time!</div>
+
 	</div>
+
+	<script type="text/javascript">
+		var addEvent = document.addEventListener ? function(target, type, action) {
+			if(target) {
+				target.addEventListener(type, action, false);
+			}
+		} : function(target, type, action) {
+			if(target) {
+				target.attachEvent('on' + type, action, false);
+			}
+		}
+
+		addEvent(document, 'keydown', function(e) {
+			e = e || window.event;
+			var key = e.which || e.keyCode;
+			if(key===84) {
+				document.getElementById("showDate").innerHTML = Date();
+			}
+		});
+	</script>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
 </body>
 </html>

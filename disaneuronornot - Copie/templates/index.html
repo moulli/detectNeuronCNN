@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>DIS A NEURON or NOT</title>
+	<link rel="icon" type="image/png" href="{{url_for('static', filename='brain-solid.png')}}" />
+
+</head>
+<body>
+	<h1>Welcome to THIS A NEURON or NOT</h1>
+	<h2>The goal is for you to identify whether the displayed image looks like a neuron or not. This will help train a simple convolutional neural network to recognize whether the pattern provided as input is a neuron or not. Hence the name, THIS A NEURON. Thank you for your amazing time.</h2>
+	
+	<div>
+		Click below to launch simulation <br>
+		<a class="nav-item nav-link" href="{{ url_for('disaneuron') }}">Click here</a>
+	</div> 
+
+	<div id="showDate">Date should load here...</div>
+
+	<script type="text/javascript">
+		var addEvent = document.addEventListener ? function(target, type, action) {
+			if(target) {
+				target.addEventListener(type, action, false);
+			}
+		} : function(target, type, action) {
+			if(target) {
+				target.attachEvent('on' + type, action, false);
+			}
+		}
+
+		addEvent(document, 'keydown', function(e) {
+			e = e || window.event;
+			var key = e.which || e.keyCode;
+			if(key===84) {
+				document.getElementById("showDate").innerHTML = Date();
+			}
+		});
+	</script>
+</body>
+</html>
