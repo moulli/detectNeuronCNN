@@ -195,25 +195,44 @@ plot(centers_layer(:, 2), centers_layer(:, 1), '.r')
     
 %% Saving individual neurons
 
-cd images_to_label
 for i = 1:10
-    h = figure;
+    % Plot image with n-pixel bordel
+    h = figure('Menu', 'none', 'ToolBar', 'none'); 
+    ah = axes('Units', 'Normalized', 'Position', [0, 0, 1, 1]);
     set(h,'Visible','off');
     hold on
     co = centers_layer(randperm(size(centers_layer, 1), 1), :);
-%     co = centers_layer(i, :);
-    n = 15; temp = mlayer(co(1)-n:co(1)+n, co(2)-n:co(2)+n);
-    image(temp, 'CDataMapping', 'scaled')
+    n = 15; 
+    if co(1)-n <= 0 || co(1)+n > size(mlayer, 1) || co(2)-n <= 0 || co(2)+n > size(mlayer, 2)
+        continue
+    end
+    pixels = mlayer(co(1)-n:co(1)+n, co(2)-n:co(2)+n);
+    image(pixels, 'CDataMapping', 'scaled')
+    % Plot center of image and localization circle
     scatter(n+1, n+1, '.k')
     x = n+1; y = n+1; r = 5;
     ang=0:0.01:2*pi; 
     xp=r*cos(ang);
     yp=r*sin(ang);
     plot(x+xp,y+yp, 'k');
-    axis equal
-    axis off
-    namesave = strcat(num2str(round(100000000*rand)), '.png');
-    hgexport(h, namesave, hgexport('factorystyle'), 'Format', 'png');
+    axis equal 
+    axis off        
+    % Define name
+    namelen = 9;
+    namenum = num2str(round((10^namelen)*rand));
+    namenum = strcat(repmat('0', 1, namelen-length(namenum)), namenum);
+    % Save .mat file
+    matpath = fullfile('images_to_label', 'mat', strcat(namenum, '.mat'));
+    save(matpath, 'pixels');
+    % Save .png file
+    pngpath = fullfile('images_to_label', 'png', strcat(namenum, '.png'));
+    img = getframe(gca);
+    pngpad = img.cdata;
+    padding = (size(pngpad, 2)-size(pngpad, 1))/2;
+    pngfile = pngpad(:, padding+1:size(pngpad, 2)-padding, :);
+    imwrite(pngfile, pngpath);
+%     saveas(h, pngpath, 'png');
+%     hgexport(h, jpgpath, hgexport('factorystyle'), 'Format', 'png');
 end
     
     
