@@ -35,7 +35,8 @@ def disaneuron():
 			label = 0
 		with open('labels.json', 'r+') as f:
 		    data = json.load(f)
-		    data[prev_img[-1]] = label
+		    img_path = prev_img[-1]
+		    data[img_path[16:-4]] = label
 		    f.seek(0) # should reset file position to the beginning.
 		    json.dump(data, f, indent=4)
 		    f.truncate() # remove remaining part	

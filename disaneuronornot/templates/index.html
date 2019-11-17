@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>DIS A NEURON or NOT</title>
+	<title>DANoN</title>
 	<link rel="icon" type="image/png" href="{{url_for('static', filename='brain-solid.png')}}" />
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -13,29 +13,26 @@
 
 	<div class="container">
 
-		<div class="row mt-2 mb-4">
+		<div class="row col-7 mt-2 mb-4">
 			<h1>Welcome to DIS A NEURON or NOT</h1>
 		</div>
 
-		<div class="row">
-			<h2>The goal is for you to identify whether the displayed image looks like a neuron or not. This will help train a simple convolutional neural network to recognize whether the pattern provided as input is a neuron or not. Hence the name, THIS A NEURON. </h2>
+		<div class="row col-7 p-1">
+			<h4>The goal is for you to identify whether the displayed image looks like a neuron or not. This will help train a simple convolutional neural network to recognize whether the pattern provided as input is a neuron or not. Hence the name, DIS A NEURON. </h4>
 		</div>
 
-		<div class="row">
-			<h3>You can select whether you think it is a neuron or not by clicking on the two buttons right of the image. Otherwise you can also press keys 'y' if you think it is a neuron, or 'n' if you think it is not a neuron. <br>
+		<div class="row col-7 p-1">
+			<h5>You can select whether you think it is a neuron or not by clicking on the two buttons right of the image. Otherwise you can also press keys 'y' if you think it is a neuron, or 'n' if you think it is not a neuron. <br>
 			You can go back once to the previous image if you think you classified wrongly, by clicking on the button left of the picture. You can also press key 'd' to do that. <br>
-			Thank you for your amazing time.
-			</h3>
+			Have fun playing!
+			</h5>
 		</div>
 	
-		<div class="row mt-4">
-			Click below to launch simulation <br>
-		</div> 
-		<div class="row">
-			<a class="nav-item nav-link" href="{{ url_for('disaneuron') }}">Click here</a>
+		<div class="row col-7 px-5 mx-5">
+			<h3><a class="nav-item nav-link" href="{{ url_for('disaneuron') }}">Click HERE to launch simulation</a></h3>
 		</div> 
 
-		<div id="showDate" class="row text-center">Hit t for time!</div>
+		<div id="showDate" class="row col-7 font-italic">Hit 't' for time!</div>
 
 	</div>
 

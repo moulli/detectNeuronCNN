@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 
-	<title>DIS A NEURON or NOT - simulation</title>
+	<title>DANoN - simulation</title>
 	<link rel="icon" type="image/png" href="{{url_for('static', filename='brain-solid.png')}}" />
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -13,23 +13,23 @@
 
 	<div class="container">
 
-		<div class="row mt-2 mb-4">
+		<div class="row col-7 mt-2 mb-4">
 			<h1>Welcome to THE SIMULATION</h1>
 		</div>
 
 		<div class="row">
-			<div class="col-5">
+			<div class="col-4">
 				<figure class="figure">
 					<img src="{{ img }}" title="Rate this neuron!" alt="Picture of what may or may not be a neuron" class="img-fluid" />
 					<figcaption class="text-center">Rate this neuron!</figcaption>
 				</figure>
 			</div>
 
-			<div class="col-3">
+			<div class="col-3 py-5">
 				<form method="POST" action="" id="form">
 					<div class="btn-group-vertical btn-block">
 						<input type="submit" name="yesneu" value="HEY DIS A NEURON!" id="yes_form" class="btn btn-secondary">
-						<input type="submit" name="noneu" value="Definitely NOT a neuron" id="no_form" class="btn btn-light mb-5">
+						<input type="submit" name="noneu" value="Definitely NOT a neuron" id="no_form" class="btn btn-outline-danger mb-5">
 
 
 						{% if prev_len == 2 %}
@@ -44,11 +44,8 @@
 			</div>
 		</div>
 
-		<div class="row mt-4">
-			Click below to get back to homepage
-		</div>
-		<div class="row">
-			<a class="nav-item nav-link" href="{{ url_for('index') }}">Get back to welcoming page</a>
+		<div class="row col-7 px-5 mx-5">
+			<h3><a class="nav-item nav-link" href="{{ url_for('index') }}">Get back to welcoming page</a></h3>
 		</div>
 
 	</div>
