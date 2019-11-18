@@ -118,7 +118,7 @@ mlayer = gs;
 
 %% Works really badly, let's try with gaussians:
 
-LIMIT = 440;
+LIMIT = 500; %440;
 halfsize_neuron = 2;
 mlayer_copy = mlayer;
 mlayer = double(mlayer);
@@ -151,6 +151,7 @@ while 1
         for k2 = -halfsize_neuron:halfsize_neuron
             xtemp = max(1, xpt+k1); xtemp = min(slayer(1), xtemp);
             ytemp = max(1, ypt+k2); ytemp = min(slayer(2), ytemp);
+            round(mlayer(xtemp, ytemp))
             pts_temp = repmat([xtemp, ytemp], round(mlayer(xtemp, ytemp)), 1);
             pts = [pts; pts_temp];
         end
