@@ -10,7 +10,7 @@ function saveNeurons(layer, centers, mask_contour)
         % Plot image with n-pixel bordel
         h = figure('Menu', 'none', 'ToolBar', 'none'); 
         ah = axes('Units', 'Normalized', 'Position', [0, 0, 1, 1]);
-        set(h,'Visible','off');
+%         set(h,'Visible','off');
         hold on
         co = centers(i, :);
         n = 20; 
@@ -26,7 +26,10 @@ function saveNeurons(layer, centers, mask_contour)
 %         xp=r*cos(ang);
 %         yp=r*sin(ang);
 %         plot(x+xp,y+yp, 'k');
-        plot(mask_contour{i}(1, :), mask_contour{i}(2, :), 'k')
+        mc = mask_contour{i};
+%         mc = n - mc + [centers(i, 2); centers(i, 1)] + 1;
+        mc = mc - [centers(i, 2); centers(i, 1)] + n + 1;
+        plot(mc(1, :), mc(2, :), 'k')
         axis equal 
         axis off        
         % Define name
