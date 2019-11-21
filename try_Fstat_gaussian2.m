@@ -3,7 +3,12 @@ clear; close all; clc
 
 %% Load mlayer
 
-load('C:\Users\Hippolyte Moulle\Desktop\mlayer.mat', 'mlayer');
+try
+    load('C:\Users\Hippolyte Moulle\Desktop\mlayer.mat', 'mlayer');
+catch
+    load('/home/ljp/Desktop/mlayer.mat', 'mlayer');
+end
+mlayer = mlayer(461:660, 1:200);
 
 
 %% Build regressors
@@ -28,7 +33,7 @@ reg = [reg1, reg2];
 %% Compute F-statistic for all points above limit using regressors
 
 % Define limit
-limit = 0;
+limit = 475;
 % Convert mlayer to doubles
 mlayer = double(mlayer);
 % Define F-statistic and coefficients matrix
@@ -61,7 +66,7 @@ end
 %% Cleaning the Fmat result
 
 % Delete values for coef2mat under a certain value
-Fcorrected = Fmat .* (coef2mat > 15);
+Fcorrected = Fmat .* (coef2mat > 10);
 
 % Convolve with reg2
 gkernel = reshape(reg2, tsize, tsize) - min(reg2);
@@ -114,10 +119,25 @@ for ix = (halfsize+1):(size(mlayer, 1)-halfsize)
 end
 
 
+%% Get mask contour
+
+%mask_contour = getNeuronsFromCenters(mlayer, Cmat);
+
+
 %% Plotting the different information
 
 figure
 image(Fmat, 'CDataMapping', 'scaled')
+colorbar
+axis equal
+
+figure
+image(coef1mat, 'CDataMapping', 'scaled')
+colorbar
+axis equal
+
+figure
+image(coef2mat, 'CDataMapping', 'scaled')
 colorbar
 axis equal
 
@@ -128,6 +148,11 @@ axis equal
 
 figure
 image(Fconv, 'CDataMapping', 'scaled')
+colorbar
+axis equal
+
+figure
+image(Fmat_N, 'CDataMapping', 'scaled')
 colorbar
 axis equal
 

@@ -25,7 +25,7 @@ mlayer = max(mlayer, [], 3);
 
 %% Directly importing graystack
 
-gs = graystack00000012;
+gs = graystack00000008;
 gs = gs(26:end, 26:end);
 mlayer = gs;
 
