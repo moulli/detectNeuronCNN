@@ -17,7 +17,7 @@ reg1 = ones(tsize);
 reg1 = reg1(:);
 % Gaussian regressor
 [X, Y] = meshgrid(1:tsize);
-comat = 3 * eye(2);
+comat = 4 * eye(2);
 reg2 = mvnpdf([X(:), Y(:)], [halfsize+1, halfsize+1], comat);
 reg2 = reg2 / mean(reg2);
 
@@ -61,7 +61,7 @@ end
 %% Cleaning the Fmat result
 
 % Delete values for coef2mat under a certain value
-Fcorrected = Fmat .* (coef2mat > 12);
+Fcorrected = Fmat .* (coef2mat > 15);
 
 % Convolve with reg2
 gkernel = reshape(reg2, tsize, tsize) - min(reg2);
@@ -74,6 +74,7 @@ Fconv = Fconv(halfsize+1:sFconv(1)-halfsize, halfsize+1:sFconv(2)-halfsize);
 
 %% Compute coefficient 2 for all points in Fconv
 
+Fmat_N = zeros(size(mlayer));
 coef2mat_N = zeros(size(mlayer));
 % Launch algorithm
 tic
@@ -81,8 +82,9 @@ printinfo = 0;
 for ix = (halfsize+1):(size(mlayer, 1)-halfsize)
     for iy = (halfsize+1):(size(mlayer, 2)-halfsize)
         layer_zone = Fconv(ix-halfsize:ix+halfsize, iy-halfsize:iy+halfsize);
-        coeffs = regress(layer_zone(:), reg);
+        [coeffs, ~, ~, ~, stats] = regress(layer_zone(:), reg);
         coef2mat_N(ix, iy) = coeffs(2);
+        Fmat_N(ix, iy) = stats(2);
         % Provide information
         numpix = (ix-1)*(size(mlayer, 2)-2*halfsize) + iy;
         if mod(numpix, 10000) == 0
