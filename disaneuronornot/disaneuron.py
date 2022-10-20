@@ -50,7 +50,7 @@ def disaneuron():
 
 # Run app in debug mode
 if __name__ == '__main__':
-	app.run(debug=True, host='0.0.0.0', port=5001) 
+	app.run(debug=True) #, host='0.0.0.0', port=5001) 
 	# host='0.0.0.0' is to make it accessible on the network through IP address
 	# there is a bug whenever server is active on a port, then shut down then relaunched,
 	# therefore, port=n allows to change port
